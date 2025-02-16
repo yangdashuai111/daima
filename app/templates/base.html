@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公众号矩阵管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
+    <script src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js" data-color="#FD4F4F" data-border-radius="small"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- 侧边栏 -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full">
+            <div class="p-4">
+                <h1 class="text-xl font-semibold text-gray-900">矩阵管理系统</h1>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-1">
+                <a href="/" class="flex items-center px-4 py-3 {% if request.url.path == '/' %}text-custom bg-gray-50{% else %}text-gray-600 hover:bg-gray-50{% endif %} rounded-lg group">
+                    <i class="fas fa-chart-line mr-3"></i>
+                    <span>数据总览</span>
+                </a>
+                <a href="/accounts" class="flex items-center px-4 py-3 {% if request.url.path == '/accounts' %}text-custom bg-gray-50{% else %}text-gray-600 hover:bg-gray-50{% endif %} rounded-lg group">
+                    <i class="fas fa-users mr-3"></i>
+                    <span>账号列表</span>
+                </a>
+                <a href="/operators" class="flex items-center px-4 py-3 {% if request.url.path == '/operators' %}text-custom bg-gray-50{% else %}text-gray-600 hover:bg-gray-50{% endif %} rounded-lg group">
+                    <i class="fas fa-user-tie mr-3"></i>
+                    <span>代运营账号</span>
+                </a>
+                <a href="/materials" class="flex items-center px-4 py-3 {% if request.url.path == '/materials' %}text-custom bg-gray-50{% else %}text-gray-600 hover:bg-gray-50{% endif %} rounded-lg group">
+                    <i class="fas fa-file-alt mr-3"></i>
+                    <span>素材库</span>
+                </a>
+
+                <!-- 内容管理下拉菜单 -->
+                <div class="space-y-1">
+                    <button type="button" 
+                            class="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group"
+                            onclick="toggleSubmenu('content-submenu')">
+                        <i class="fas fa-folder mr-3"></i>
+                        <span class="flex-1">内容管理</span>
+                        <i class="fas fa-chevron-down transform transition-transform" id="content-submenu-icon"></i>
+                    </button>
+                    <div class="hidden pl-4 space-y-1" id="content-submenu">
+                        <a href="/tracks" class="flex items-center px-4 py-3 {% if request.url.path == '/tracks' %}text-custom bg-gray-50{% else %}text-gray-600 hover:bg-gray-50{% endif %} rounded-lg group">
+                            <i class="fas fa-tag mr-3"></i>
+                            <span>赛道管理</span>
+                        </a>
+                        <a href="/articles" class="flex items-center px-4 py-3 {% if request.url.path == '/articles' %}text-custom bg-gray-50{% else %}text-gray-600 hover:bg-gray-50{% endif %} rounded-lg group">
+                            <i class="fas fa-newspaper mr-3"></i>
+                            <span>文章管理</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 数据源采集下拉菜单 -->
+                <div class="space-y-1">
+                    <button type="button" 
+                            class="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group"
+                            onclick="toggleSubmenu('data-submenu')">
+                        <i class="fas fa-database mr-3"></i>
+                        <span class="flex-1">数据源采集</span>
+                        <i class="fas fa-chevron-down transform transition-transform" id="data-submenu-icon"></i>
+                    </button>
+                    <div class="hidden pl-4 space-y-1" id="data-submenu">
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group">
+                            <i class="fab fa-weixin mr-3"></i>
+                            <span>公众号采集</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group">
+                            <i class="fas fa-robot mr-3"></i>
+                            <span>AI新闻采集</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group">
+                            <i class="fab fa-twitter mr-3"></i>
+                            <span>推特采集</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group">
+                            <i class="fas fa-heart mr-3"></i>
+                            <span>小红书采集</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group">
+                            <i class="fas fa-newspaper mr-3"></i>
+                            <span>头条采集</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg group">
+                    <i class="fas fa-cog mr-3"></i>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 ml-64">
+            <div class="max-w-8xl mx-auto px-8 py-6">
+                <h1 class="text-2xl font-semibold mb-8">{% block header %}{% endblock %}</h1>
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            const icon = document.getElementById(submenuId + '-icon');
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                submenu.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        // 根据当前页面路径自动展开相应的子菜单
+        document.addEventListener('DOMContentLoaded', function() {
+            const path = window.location.pathname;
+            if (path.startsWith('/tracks') || path.startsWith('/articles')) {
+                document.getElementById('content-submenu').classList.remove('hidden');
+                document.getElementById('content-submenu-icon').classList.add('rotate-180');
+            }
+        });
+    </script>
+</body>
+</html> 

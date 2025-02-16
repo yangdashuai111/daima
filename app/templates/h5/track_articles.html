@@ -1,0 +1,119 @@
+{% extends "h5/base.html" %}
+
+{% block title %}{{ track.name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col">
+    <!-- 顶部导航 -->
+    <div class="bg-white px-4 py-4">
+        <div class="flex items-center">
+            <a href="/h5/articles" class="text-gray-600 mr-3">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="text-lg font-medium flex-1">{{ track.name }}</h1>
+            <div class="text-sm text-gray-500">
+                今日可下载：<span class="text-blue-600 font-medium">{{ user.daily_limit }}篇</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 搜索框 -->
+    <div class="bg-white mt-px px-4 py-3">
+        <div class="relative">
+            <input type="text" 
+                   id="searchInput"
+                   placeholder="搜索文章..." 
+                   class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <i class="fas fa-search text-gray-400 absolute left-3 top-3"></i>
+        </div>
+    </div>
+    
+    <!-- 文章列表 -->
+    <div class="flex-1 px-4 py-4">
+        <div class="space-y-3" id="articleList">
+            {% for article in articles %}
+            <div class="bg-white rounded-lg p-4 shadow-sm article-item">
+                <h3 class="text-gray-900 font-medium article-title">{{ article.title }}</h3>
+                <div class="mt-2 flex items-center justify-between">
+                    <div class="text-xs text-gray-500">
+                        {{ article.created_at.strftime('%Y-%m-%d') }}
+                    </div>
+                    {% if article.id in claimed_article_ids %}
+                    <button class="text-sm text-gray-500" disabled>
+                        <i class="fas fa-check-circle"></i>
+                        已下载
+                    </button>
+                    {% else %}
+                    <button onclick="handleDownload({{ article.id }})" 
+                            class="text-sm text-blue-600 hover:text-blue-700">
+                        <i class="fas fa-download"></i>
+                        下载
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-inbox text-2xl mb-2"></i>
+                <p>暂无可下载的文章</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 搜索功能
+const searchInput = document.getElementById('searchInput');
+const articleList = document.getElementById('articleList');
+const articles = articleList.getElementsByClassName('article-item');
+
+searchInput.addEventListener('input', function(e) {
+    const searchText = e.target.value.toLowerCase();
+    
+    Array.from(articles).forEach(article => {
+        const title = article.querySelector('.article-title').textContent.toLowerCase();
+        if (title.includes(searchText)) {
+            article.style.display = 'block';
+        } else {
+            article.style.display = 'none';
+        }
+    });
+});
+
+// 下载文章
+async function handleDownload(articleId) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/h5/articles/${articleId}/download`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = ''; // 使用服务器返回的文件名
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+            
+            // 刷新页面以更新状态
+            window.location.reload();
+        } else {
+            const data = await response.json();
+            alert(data.detail || '下载失败，请重试');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('下载失败，请重试');
+    }
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block header %}
+    运营数据总览
+{% endblock %}
+
+{% block content %}
+<!-- 数据统计卡片 -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-custom rounded-lg p-6 text-white">
+        <div class="text-sm mb-2">总粉丝数</div>
+        <div class="text-3xl font-semibold mb-2">24,986</div>
+        <div class="flex items-center text-sm">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>2.4% 较上周</span>
+        </div>
+    </div>
+    <div class="bg-emerald-500 rounded-lg p-6 text-white">
+        <div class="text-sm mb-2">昨日总阅读</div>
+        <div class="text-3xl font-semibold mb-2">1,720</div>
+        <div class="flex items-center text-sm">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>17.0% 较前日</span>
+        </div>
+    </div>
+    <div class="bg-violet-500 rounded-lg p-6 text-white">
+        <div class="text-sm mb-2">昨日新增粉丝</div>
+        <div class="text-3xl font-semibold mb-2">19</div>
+        <div class="flex items-center text-sm">
+            <i class="fas fa-arrow-down mr-1"></i>
+            <span>5.0% 较前日</span>
+        </div>
+    </div>
+    <div class="bg-orange-500 rounded-lg p-6 text-white">
+        <div class="text-sm mb-2">昨日总收入</div>
+        <div class="text-3xl font-semibold mb-2">¥20.42</div>
+        <div class="flex items-center text-sm">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>31.0% 较前日</span>
+        </div>
+    </div>
+</div>
+
+<!-- 图表区域 -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-medium">阅读量趋势</h3>
+            <select class="border-gray-200 rounded-lg text-sm !rounded-button">
+                <option>最近7天</option>
+                <option>最近30天</option>
+            </select>
+        </div>
+        <div id="readChart" class="h-80"></div>
+    </div>
+    <div class="bg-white rounded-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-medium">收入趋势</h3>
+            <select class="border-gray-200 rounded-lg text-sm !rounded-button">
+                <option>最近7天</option>
+                <option>最近30天</option>
+            </select>
+        </div>
+        <div id="incomeChart" class="h-80"></div>
+    </div>
+</div>
+
+<!-- 公众号详细数据 -->
+<div class="bg-white rounded-lg p-6">
+    <h3 class="text-lg font-medium mb-6">公众号详细数据</h3>
+    <table class="w-full">
+        <thead>
+            <tr class="text-left text-sm text-gray-600">
+                <th class="pb-4">公众号</th>
+                <th class="pb-4">总粉丝</th>
+                <th class="pb-4">昨日新增</th>
+                <th class="pb-4">昨日阅读</th>
+                <th class="pb-4">阅读增长</th>
+                <th class="pb-4">昨日收入</th>
+                <th class="pb-4">总收入</th>
+            </tr>
+        </thead>
+        <tbody class="text-sm">
+            <tr class="border-t">
+                <td class="py-4">AI新闻精选</td>
+                <td>21,797</td>
+                <td class="text-emerald-500">+8</td>
+                <td>810</td>
+                <td class="text-emerald-500">+17.0%</td>
+                <td>¥20.42</td>
+                <td>¥5,149.28</td>
+            </tr>
+            <tr class="border-t">
+                <td class="py-4">AI科技前沿</td>
+                <td>3,189</td>
+                <td class="text-emerald-500">+11</td>
+                <td>910</td>
+                <td class="text-emerald-500">+31.0%</td>
+                <td>¥0.00</td>
+                <td>¥0.00</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const readChart = echarts.init(document.getElementById('readChart'));
+    const readOption = {
+        animation: false,
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['总阅读', '原创阅读']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ['11-22', '11-23', '11-24', '11-25', '11-26', '11-27', '11-28']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '总阅读',
+                type: 'line',
+                data: [200, 400, 600, 800, 900, 850, 400],
+                smooth: true,
+                color: '#3B82F6'
+            },
+            {
+                name: '原创阅读',
+                type: 'line',
+                data: [0, 0, 0, 400, 800, 800, 800],
+                smooth: true,
+                color: '#10B981'
+            }
+        ]
+    };
+    readChart.setOption(readOption);
+
+    const incomeChart = echarts.init(document.getElementById('incomeChart'));
+    const incomeOption = {
+        animation: false,
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['总收入', '原创收入']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: ['11-22', '11-23', '11-24', '11-25', '11-26', '11-27', '11-28']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '总收入',
+                type: 'bar',
+                data: [20, 20, 0, 0, 0, 0, 0],
+                color: '#3B82F6'
+            },
+            {
+                name: '原创收入',
+                type: 'bar',
+                data: [0, 0, 20, 20, 20, 20, 20],
+                color: '#10B981'
+            }
+        ]
+    };
+    incomeChart.setOption(incomeOption);
+
+    window.addEventListener('resize', function() {
+        readChart.resize();
+        incomeChart.resize();
+    });
+</script>
+{% endblock %} 

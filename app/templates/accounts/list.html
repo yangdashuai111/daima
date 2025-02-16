@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block header %}
+    账号管理
+{% endblock %}
+
+{% block content %}
+<!-- Tab 导航 -->
+<div class="mb-6 border-b border-gray-200">
+    <nav class="flex space-x-4" role="tablist">
+        <button class="px-4 py-2 text-sm font-medium text-custom border-b-2 border-custom" 
+                role="tab" 
+                aria-selected="true"
+                data-target="account-panel">
+            账号管理
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300" 
+                role="tab" 
+                aria-selected="false"
+                data-target="browser-panel">
+            浏览器管理
+        </button>
+    </nav>
+</div>
+
+<!-- 账号管理面板 -->
+<div class="space-y-6" id="account-panel" role="tabpanel">
+    <!-- 操作按钮 -->
+    <div class="flex justify-between items-center">
+        <button class="bg-custom text-white px-4 py-2 rounded-lg hover:bg-custom/90 flex items-center space-x-2">
+            <i class="fas fa-plus"></i>
+            <span>新增账号</span>
+        </button>
+
+        <!-- 搜索框 -->
+        <div class="flex items-center space-x-4">
+            <div class="relative">
+                <input type="text" 
+                       placeholder="搜索账号..." 
+                       class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom/20 focus:border-custom">
+                <i class="fas fa-search text-gray-400 absolute left-3 top-2.5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 账号列表 -->
+    <div class="bg-white rounded-lg">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left text-sm text-gray-600 border-b">
+                        <th class="px-6 py-4 font-medium">用户名</th>
+                        <th class="px-6 py-4 font-medium">密码</th>
+                        <th class="px-6 py-4 font-medium">浏览器</th>
+                        <th class="px-6 py-4 font-medium">状态</th>
+                        <th class="px-6 py-4 font-medium">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for account in accounts %}
+                    <tr class="text-sm text-gray-700">
+                        <td class="px-6 py-4">{{ account.username }}</td>
+                        <td class="px-6 py-4">••••••••</td>
+                        <td class="px-6 py-4">{{ account.browser.browser_name if account.browser else '-' }}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-emerald-100 text-emerald-800' if account.status else 'bg-red-100 text-red-800' }}">
+                                {{ '正常' if account.status else '禁用' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-custom">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-red-600">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">暂无数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 浏览器管理面板 -->
+<div class="space-y-6 hidden" id="browser-panel" role="tabpanel">
+    <!-- 操作按钮 -->
+    <div class="flex justify-between items-center">
+        <button class="bg-custom text-white px-4 py-2 rounded-lg hover:bg-custom/90 flex items-center space-x-2">
+            <i class="fas fa-plus"></i>
+            <span>新增浏览器</span>
+        </button>
+    </div>
+
+    <!-- 浏览器列表 -->
+    <div class="bg-white rounded-lg">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left text-sm text-gray-600 border-b">
+                        <th class="px-6 py-4 font-medium">浏览器ID</th>
+                        <th class="px-6 py-4 font-medium">浏览器名称</th>
+                        <th class="px-6 py-4 font-medium">备注</th>
+                        <th class="px-6 py-4 font-medium">代理IP</th>
+                        <th class="px-6 py-4 font-medium">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for browser in browsers %}
+                    <tr class="text-sm text-gray-700">
+                        <td class="px-6 py-4">{{ browser.id }}</td>
+                        <td class="px-6 py-4">{{ browser.browser_name }}</td>
+                        <td class="px-6 py-4">{{ browser.notes or '-' }}</td>
+                        <td class="px-6 py-4">{{ browser.proxy_ip or '-' }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-custom">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-red-600">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">暂无数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab 切换功能
+    const tabs = document.querySelectorAll('[role="tab"]');
+    const panels = document.querySelectorAll('[role="tabpanel"]');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // 更新 tab 样式
+            tabs.forEach(t => {
+                t.classList.remove('text-custom', 'border-custom');
+                t.classList.add('text-gray-500', 'border-transparent');
+                t.setAttribute('aria-selected', 'false');
+            });
+            tab.classList.remove('text-gray-500', 'border-transparent');
+            tab.classList.add('text-custom', 'border-custom');
+            tab.setAttribute('aria-selected', 'true');
+            
+            // 显示对应的面板
+            const targetId = tab.getAttribute('data-target');
+            panels.forEach(panel => {
+                panel.classList.add('hidden');
+                if (panel.id === targetId) {
+                    panel.classList.remove('hidden');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

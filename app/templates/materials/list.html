@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block header %}
+    素材库
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- 操作栏 -->
+    <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <button class="bg-custom text-white px-4 py-2 rounded-lg hover:bg-custom/90 flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>添加素材</span>
+            </button>
+            <button class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 flex items-center space-x-2">
+                <i class="fas fa-file-import"></i>
+                <span>导入素材</span>
+            </button>
+        </div>
+
+        <!-- 搜索和筛选 -->
+        <div class="flex items-center space-x-4">
+            <select class="border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-custom/20 focus:border-custom">
+                <option value="">全部来源</option>
+                <option value="新闻公众号">新闻公众号</option>
+                <option value="AI生成">AI生成</option>
+            </select>
+            <div class="relative">
+                <input type="text" 
+                       placeholder="搜索素材..." 
+                       class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom/20 focus:border-custom">
+                <i class="fas fa-search text-gray-400 absolute left-3 top-2.5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 素材列表 -->
+    <div class="bg-white rounded-lg">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-left text-sm text-gray-600 border-b">
+                        <th class="px-6 py-4 font-medium">ID</th>
+                        <th class="px-6 py-4 font-medium">来源</th>
+                        <th class="px-6 py-4 font-medium">原始标题</th>
+                        <th class="px-6 py-4 font-medium">AI标题</th>
+                        <th class="px-6 py-4 font-medium">状态</th>
+                        <th class="px-6 py-4 font-medium">创建时间</th>
+                        <th class="px-6 py-4 font-medium">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for material in materials %}
+                    <tr class="text-sm text-gray-700">
+                        <td class="px-6 py-4">{{ material.id }}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                {{ material.source_type }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">{{ material.title }}</td>
+                        <td class="px-6 py-4">{{ material.ai_content or '-' }}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                {% if material.status == '已发布' %}
+                                    bg-emerald-100 text-emerald-800
+                                {% else %}
+                                    bg-gray-100 text-gray-800
+                                {% endif %}">
+                                {{ material.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {{ material.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-600 hover:text-custom" title="查看">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-emerald-600" title="发布">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-custom" title="编辑">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="text-gray-600 hover:text-red-600" title="删除">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">暂无数据</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 
