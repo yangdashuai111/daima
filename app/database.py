@@ -6,17 +6,21 @@ import os
 # 获取数据库 URL，如果环境变量不存在则使用默认的 SQLite
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./matrix.db")
 
-# 如果是 SQLite 数据库，需要特殊处理
-if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    engine = create_async_engine(
-        SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False}
-    )
-else:
-    engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
+# 创建异步引擎
+engine = create_async_engine(
+    SQLALCHEMY_DATABASE_URL,
+    echo=False,
+    future=True,
+    pool_pre_ping=True
+)
 
+# 创建异步会话工厂
 AsyncSessionLocal = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+    autocommit=False,
+    autoflush=False
 )
 
 async def init_db():

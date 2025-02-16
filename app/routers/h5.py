@@ -100,7 +100,7 @@ async def article_list(
     operator: Operator = Depends(get_current_user_from_cookie),
     db: AsyncSession = Depends(get_db)
 ):
-    # 获取用户可访问的文章
+    # 获取用户可访问的赛道和文章
     result = await db.execute(
         select(Operator)
         .options(
@@ -108,7 +108,7 @@ async def article_list(
         )
         .where(Operator.id == operator.id)
     )
-    operator = result.scalar_one_or_none()
+    operator_with_tracks = result.scalar_one_or_none()
     
     # 获取用户已下载的文章ID
     claimed_result = await db.execute(
@@ -121,7 +121,7 @@ async def article_list(
         "h5/articles.html",
         {
             "request": request,
-            "user": operator,
+            "user": operator_with_tracks,
             "claimed_article_ids": claimed_article_ids
         }
     )
